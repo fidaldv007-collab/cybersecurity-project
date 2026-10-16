@@ -60,3 +60,19 @@ jobs:
 
           cat app.log
           exit 1
+
+        - name: Generate CycloneDX SBOM
+          uses: anchore/sbom-action@v0
+          with:
+            path: .
+            format: cyclonedx-json
+            output-file: sbom.cyclonedx.json
+            upload-artifact: false
+
+        - name: Upload SBOM artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: sbom-cyclonedx
+            path: sbom.cyclonedx.json
+            if-no-files-found: error
+            retention-days: 14
