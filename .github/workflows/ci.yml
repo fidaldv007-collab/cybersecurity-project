@@ -1,14 +1,18 @@
-name: CI
+name: DevSecOps CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, member3]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  test-and-scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,13 +20,43 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
+          cache: "pip"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run application smoke test
+      - name: Install application dependencies
         run: |
-          python app.py &
-          sleep 3
-          curl -f http://127.0.0.1:8000/health
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run automated tests
+        run: python -m pytest -v
+
+      - name: Scan Python code with Bandit
+        run: |
+          python -m pip install bandit
+          bandit -r app -ll
+
+      - name: Audit dependencies
+        run: |
+          python -m pip install pip-audit
+          pip-audit -r requirements.txt
+
+      - name: Run application health check
+        shell: bash
+        run: |
+          python -m uvicorn app.main:app \
+            --host 127.0.0.1 --port 8000 > app.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+
+          for i in {1..30}; do
+            if curl --fail --silent \
+              http://127.0.0.1:8000/health; then
+              echo
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat app.log
+          exit 1
