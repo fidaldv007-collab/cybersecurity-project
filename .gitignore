@@ -16,3 +16,4 @@ reports/oci-image/
 reports/trivy-official.json
 reports/trivy-image.json
 reports/image-sbom.json
+sbom.cyclonedx.json
