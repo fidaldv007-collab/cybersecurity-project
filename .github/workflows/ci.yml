@@ -9,11 +9,12 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   test-and-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
@@ -71,7 +72,7 @@ jobs:
           output-file: sbom.cyclonedx.json
           upload-artifact: false
 
-      - name: Upload SBOM artifact
+      - name: Upload SBOM for signing job
         uses: actions/upload-artifact@v4
         with:
           name: sbom-cyclonedx
@@ -79,8 +80,25 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  build-sign-verify:
+    if: github.event_name == 'push'
+    needs: test-and-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download SBOM
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: artifacts
+
       - name: Log in to GitHub Container Registry
-        if: github.event_name == 'push'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -89,7 +107,6 @@ jobs:
 
       - name: Build and push Docker image
         id: build-image
-        if: github.event_name == 'push'
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -97,11 +114,10 @@ jobs:
           tags: ghcr.io/${{ github.repository_owner }}/cybersecurity-demo:${{ github.ref_name }}
 
       - name: Install Cosign
-        if: github.event_name == 'push'
         uses: sigstore/cosign-installer@v3
 
-      - name: Sign image
-        if: github.event_name == 'push'
+
+      - name: Sign image and SBOM
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -112,12 +128,15 @@ jobs:
           umask 077
           printf '%s' "$COSIGN_PRIVATE_KEY" > cosign.key
 
-          cosign sign --yes \
+          IMAGE="ghcr.io/${{ github.repository_owner }}/cybersecurity-demo@${IMAGE_DIGEST}"
+
+          cosign sign --yes --key cosign.key "$IMAGE"
+          cosign sign-blob --yes \
             --key cosign.key \
-            "ghcr.io/${{ github.repository_owner }}/cybersecurity-demo@${IMAGE_DIGEST}"
+            --bundle artifacts/sbom.bundle.json \
+            artifacts/sbom.cyclonedx.json
 
       - name: Verify image signature
-        if: github.event_name == 'push'
         env:
           IMAGE_DIGEST: ${{ steps.build-image.outputs.digest }}
         run: |
@@ -125,3 +144,9 @@ jobs:
             --key cosign.pub \
             "ghcr.io/${{ github.repository_owner }}/cybersecurity-demo@${IMAGE_DIGEST}"
 
+      - name: Verify SBOM signature bundle
+        run: |
+          cosign verify-blob \
+            --key cosign.pub \
+            --bundle artifacts/sbom.bundle.json \
+            artifacts/sbom.cyclonedx.json
