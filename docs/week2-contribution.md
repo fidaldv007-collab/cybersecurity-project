@@ -66,3 +66,10 @@ Author: Ananthu Harikumar (`ananthuharikumar36`)
 Environment: Kali Linux (`ananthu@vbox`)
 
 Documentation File: `docs/week2-contribution.md`
+## 9. Post-Scan Vulnerability Remediation
+
+After updating the Trivy vulnerability database, a rescan identified one CRITICAL vulnerability in `certifi` (GHSA-6q48-6c7w-9gw2).
+
+The dependency was upgraded from `certifi==2026.7.22` to `certifi==2026.10.19` in `requirements.txt`.
+
+A follow-up `trivy fs .` scan confirmed that the CRITICAL vulnerability was resolved and the project returned to a clean security state.
