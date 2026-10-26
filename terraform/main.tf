@@ -11,5 +11,22 @@ resource "aws_s3_bucket" "project_bucket" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "project_bucket_lifecycle" {
+  bucket = aws_s3_bucket.project_bucket.id
+
+  rule {
+    id     = "expire-old-objects"
+    status = "Enabled"
+
+    filter {}
+
+    expiration {
+      days = 90
+    }
+  }
+}
+
+
+
 
 
