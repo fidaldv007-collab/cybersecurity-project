@@ -1,0 +1,2194 @@
+{
+    "check_type": "terraform",
+    "results": {
+        "passed_checks": [
+            {
+                "check_id": "CKV_AWS_7",
+                "bc_check_id": "BC_AWS_LOGGING_8",
+                "check_name": "Ensure rotation for customer created CMKs is enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "enable_key_rotation"
+                    ]
+                },
+                "code_block": [
+                    [
+                        5,
+                        "resource \"aws_kms_key\" \"s3_key\" {\n"
+                    ],
+                    [
+                        6,
+                        "  description             = \"KMS key for DevSecOps demo S3 bucket\"\n"
+                    ],
+                    [
+                        7,
+                        "  deletion_window_in_days = 7\n"
+                    ],
+                    [
+                        8,
+                        "  enable_key_rotation     = true\n"
+                    ],
+                    [
+                        9,
+                        "\n"
+                    ],
+                    [
+                        10,
+                        "  policy = jsonencode({\n"
+                    ],
+                    [
+                        11,
+                        "    Version = \"2012-10-17\"\n"
+                    ],
+                    [
+                        12,
+                        "    Statement = [\n"
+                    ],
+                    [
+                        13,
+                        "      {\n"
+                    ],
+                    [
+                        14,
+                        "        Sid    = \"EnableAccountIAMPermissions\"\n"
+                    ],
+                    [
+                        15,
+                        "        Effect = \"Allow\"\n"
+                    ],
+                    [
+                        16,
+                        "        Principal = {\n"
+                    ],
+                    [
+                        17,
+                        "          AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\"\n"
+                    ],
+                    [
+                        18,
+                        "        }\n"
+                    ],
+                    [
+                        19,
+                        "        Action   = \"kms:*\"\n"
+                    ],
+                    [
+                        20,
+                        "        Resource = \"*\"\n"
+                    ],
+                    [
+                        21,
+                        "      }\n"
+                    ],
+                    [
+                        22,
+                        "    ]\n"
+                    ],
+                    [
+                        23,
+                        "  })\n"
+                    ],
+                    [
+                        24,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    5,
+                    24
+                ],
+                "resource": "aws_kms_key.s3_key",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.KMSRotation",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/logging-8",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_33",
+                "bc_check_id": "BC_AWS_IAM_63",
+                "check_name": "Ensure KMS key policy does not contain wildcard (*) principal",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "policy/[0]/Statement"
+                    ]
+                },
+                "code_block": [
+                    [
+                        5,
+                        "resource \"aws_kms_key\" \"s3_key\" {\n"
+                    ],
+                    [
+                        6,
+                        "  description             = \"KMS key for DevSecOps demo S3 bucket\"\n"
+                    ],
+                    [
+                        7,
+                        "  deletion_window_in_days = 7\n"
+                    ],
+                    [
+                        8,
+                        "  enable_key_rotation     = true\n"
+                    ],
+                    [
+                        9,
+                        "\n"
+                    ],
+                    [
+                        10,
+                        "  policy = jsonencode({\n"
+                    ],
+                    [
+                        11,
+                        "    Version = \"2012-10-17\"\n"
+                    ],
+                    [
+                        12,
+                        "    Statement = [\n"
+                    ],
+                    [
+                        13,
+                        "      {\n"
+                    ],
+                    [
+                        14,
+                        "        Sid    = \"EnableAccountIAMPermissions\"\n"
+                    ],
+                    [
+                        15,
+                        "        Effect = \"Allow\"\n"
+                    ],
+                    [
+                        16,
+                        "        Principal = {\n"
+                    ],
+                    [
+                        17,
+                        "          AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\"\n"
+                    ],
+                    [
+                        18,
+                        "        }\n"
+                    ],
+                    [
+                        19,
+                        "        Action   = \"kms:*\"\n"
+                    ],
+                    [
+                        20,
+                        "        Resource = \"*\"\n"
+                    ],
+                    [
+                        21,
+                        "      }\n"
+                    ],
+                    [
+                        22,
+                        "    ]\n"
+                    ],
+                    [
+                        23,
+                        "  })\n"
+                    ],
+                    [
+                        24,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    5,
+                    24
+                ],
+                "resource": "aws_kms_key.s3_key",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.KMSKeyWildcardPrincipal",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/ensure-kms-key-policy-does-not-contain-wildcard-principal",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_227",
+                "bc_check_id": "BC_AWS_GENERAL_122",
+                "check_name": "Ensure KMS key is enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "is_enabled"
+                    ]
+                },
+                "code_block": [
+                    [
+                        5,
+                        "resource \"aws_kms_key\" \"s3_key\" {\n"
+                    ],
+                    [
+                        6,
+                        "  description             = \"KMS key for DevSecOps demo S3 bucket\"\n"
+                    ],
+                    [
+                        7,
+                        "  deletion_window_in_days = 7\n"
+                    ],
+                    [
+                        8,
+                        "  enable_key_rotation     = true\n"
+                    ],
+                    [
+                        9,
+                        "\n"
+                    ],
+                    [
+                        10,
+                        "  policy = jsonencode({\n"
+                    ],
+                    [
+                        11,
+                        "    Version = \"2012-10-17\"\n"
+                    ],
+                    [
+                        12,
+                        "    Statement = [\n"
+                    ],
+                    [
+                        13,
+                        "      {\n"
+                    ],
+                    [
+                        14,
+                        "        Sid    = \"EnableAccountIAMPermissions\"\n"
+                    ],
+                    [
+                        15,
+                        "        Effect = \"Allow\"\n"
+                    ],
+                    [
+                        16,
+                        "        Principal = {\n"
+                    ],
+                    [
+                        17,
+                        "          AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\"\n"
+                    ],
+                    [
+                        18,
+                        "        }\n"
+                    ],
+                    [
+                        19,
+                        "        Action   = \"kms:*\"\n"
+                    ],
+                    [
+                        20,
+                        "        Resource = \"*\"\n"
+                    ],
+                    [
+                        21,
+                        "      }\n"
+                    ],
+                    [
+                        22,
+                        "    ]\n"
+                    ],
+                    [
+                        23,
+                        "  })\n"
+                    ],
+                    [
+                        24,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    5,
+                    24
+                ],
+                "resource": "aws_kms_key.s3_key",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.KMSKeyIsEnabled",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-aws-key-management-service-kms-key-is-enabled",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_93",
+                "bc_check_id": "BC_AWS_S3_24",
+                "check_name": "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "policy"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3ProtectAgainstPolicyLockout",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-24",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_54",
+                "bc_check_id": "BC_AWS_S3_20",
+                "check_name": "Ensure S3 bucket has block public policy enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "block_public_policy"
+                    ]
+                },
+                "code_block": [
+                    [
+                        37,
+                        "resource \"aws_s3_bucket_public_access_block\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        38,
+                        "  bucket = aws_s3_bucket.project_bucket.id\n"
+                    ],
+                    [
+                        39,
+                        "\n"
+                    ],
+                    [
+                        40,
+                        "  block_public_acls       = true\n"
+                    ],
+                    [
+                        41,
+                        "  block_public_policy     = true\n"
+                    ],
+                    [
+                        42,
+                        "  ignore_public_acls      = true\n"
+                    ],
+                    [
+                        43,
+                        "  restrict_public_buckets = true\n"
+                    ],
+                    [
+                        44,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    37,
+                    44
+                ],
+                "resource": "aws_s3_bucket_public_access_block.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3BlockPublicPolicy",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-20",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_55",
+                "bc_check_id": "BC_AWS_S3_21",
+                "check_name": "Ensure S3 bucket has ignore public ACLs enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "ignore_public_acls"
+                    ]
+                },
+                "code_block": [
+                    [
+                        37,
+                        "resource \"aws_s3_bucket_public_access_block\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        38,
+                        "  bucket = aws_s3_bucket.project_bucket.id\n"
+                    ],
+                    [
+                        39,
+                        "\n"
+                    ],
+                    [
+                        40,
+                        "  block_public_acls       = true\n"
+                    ],
+                    [
+                        41,
+                        "  block_public_policy     = true\n"
+                    ],
+                    [
+                        42,
+                        "  ignore_public_acls      = true\n"
+                    ],
+                    [
+                        43,
+                        "  restrict_public_buckets = true\n"
+                    ],
+                    [
+                        44,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    37,
+                    44
+                ],
+                "resource": "aws_s3_bucket_public_access_block.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3IgnorePublicACLs",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-21",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_56",
+                "bc_check_id": "BC_AWS_S3_22",
+                "check_name": "Ensure S3 bucket has 'restrict_public_buckets' enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "restrict_public_buckets"
+                    ]
+                },
+                "code_block": [
+                    [
+                        37,
+                        "resource \"aws_s3_bucket_public_access_block\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        38,
+                        "  bucket = aws_s3_bucket.project_bucket.id\n"
+                    ],
+                    [
+                        39,
+                        "\n"
+                    ],
+                    [
+                        40,
+                        "  block_public_acls       = true\n"
+                    ],
+                    [
+                        41,
+                        "  block_public_policy     = true\n"
+                    ],
+                    [
+                        42,
+                        "  ignore_public_acls      = true\n"
+                    ],
+                    [
+                        43,
+                        "  restrict_public_buckets = true\n"
+                    ],
+                    [
+                        44,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    37,
+                    44
+                ],
+                "resource": "aws_s3_bucket_public_access_block.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3RestrictPublicBuckets",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-22",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_53",
+                "bc_check_id": "BC_AWS_S3_19",
+                "check_name": "Ensure S3 bucket has block public ACLS enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "block_public_acls"
+                    ]
+                },
+                "code_block": [
+                    [
+                        37,
+                        "resource \"aws_s3_bucket_public_access_block\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        38,
+                        "  bucket = aws_s3_bucket.project_bucket.id\n"
+                    ],
+                    [
+                        39,
+                        "\n"
+                    ],
+                    [
+                        40,
+                        "  block_public_acls       = true\n"
+                    ],
+                    [
+                        41,
+                        "  block_public_policy     = true\n"
+                    ],
+                    [
+                        42,
+                        "  ignore_public_acls      = true\n"
+                    ],
+                    [
+                        43,
+                        "  restrict_public_buckets = true\n"
+                    ],
+                    [
+                        44,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    37,
+                    44
+                ],
+                "resource": "aws_s3_bucket_public_access_block.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3BlockPublicACLs",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/bc-aws-s3-19",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_300",
+                "bc_check_id": "BC_AWS_GENERAL_214",
+                "check_name": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+                "check_result": {
+                    "result": "PASSED",
+                    "evaluated_keys": [
+                        "rule/[0]/abort_incomplete_multipart_upload"
+                    ]
+                },
+                "code_block": [
+                    [
+                        66,
+                        "resource \"aws_s3_bucket_lifecycle_configuration\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        67,
+                        "  bucket = aws_s3_bucket.project_bucket.id\n"
+                    ],
+                    [
+                        68,
+                        "\n"
+                    ],
+                    [
+                        69,
+                        "  rule {\n"
+                    ],
+                    [
+                        70,
+                        "    id     = \"abort-incomplete-uploads\"\n"
+                    ],
+                    [
+                        71,
+                        "    status = \"Enabled\"\n"
+                    ],
+                    [
+                        72,
+                        "\n"
+                    ],
+                    [
+                        73,
+                        "    filter {}\n"
+                    ],
+                    [
+                        74,
+                        "\n"
+                    ],
+                    [
+                        75,
+                        "    abort_incomplete_multipart_upload {\n"
+                    ],
+                    [
+                        76,
+                        "      days_after_initiation = 7\n"
+                    ],
+                    [
+                        77,
+                        "    }\n"
+                    ],
+                    [
+                        78,
+                        "  }\n"
+                    ],
+                    [
+                        79,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    66,
+                    79
+                ],
+                "resource": "aws_s3_bucket_lifecycle_configuration.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.terraform.checks.resource.aws.S3AbortIncompleteUploads",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/bc-aws-300",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV2_AWS_64",
+                "bc_check_id": "BC_AWS_IAM_76",
+                "check_name": "Ensure KMS key Policy is defined",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_kms_key": {
+                            "s3_key": {
+                                "__end_line__": 24,
+                                "__start_line__": 5,
+                                "deletion_window_in_days": [
+                                    7
+                                ],
+                                "description": [
+                                    "KMS key for DevSecOps demo S3 bucket"
+                                ],
+                                "enable_key_rotation": [
+                                    true
+                                ],
+                                "policy": [
+                                    {
+                                        "Version": "2012-10-17",
+                                        "Statement": [
+                                            {
+                                                "Sid": "EnableAccountIAMPermissions",
+                                                "Effect": "Allow",
+                                                "Principal": {
+                                                    "AWS": "arn:aws:iam::data.aws_caller_identity.current.account_id:root"
+                                                },
+                                                "Action": "kms:*",
+                                                "Resource": "*"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "__address__": "aws_kms_key.s3_key"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "policy"
+                    ]
+                },
+                "code_block": [
+                    [
+                        5,
+                        "resource \"aws_kms_key\" \"s3_key\" {\n"
+                    ],
+                    [
+                        6,
+                        "  description             = \"KMS key for DevSecOps demo S3 bucket\"\n"
+                    ],
+                    [
+                        7,
+                        "  deletion_window_in_days = 7\n"
+                    ],
+                    [
+                        8,
+                        "  enable_key_rotation     = true\n"
+                    ],
+                    [
+                        9,
+                        "\n"
+                    ],
+                    [
+                        10,
+                        "  policy = jsonencode({\n"
+                    ],
+                    [
+                        11,
+                        "    Version = \"2012-10-17\"\n"
+                    ],
+                    [
+                        12,
+                        "    Statement = [\n"
+                    ],
+                    [
+                        13,
+                        "      {\n"
+                    ],
+                    [
+                        14,
+                        "        Sid    = \"EnableAccountIAMPermissions\"\n"
+                    ],
+                    [
+                        15,
+                        "        Effect = \"Allow\"\n"
+                    ],
+                    [
+                        16,
+                        "        Principal = {\n"
+                    ],
+                    [
+                        17,
+                        "          AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\"\n"
+                    ],
+                    [
+                        18,
+                        "        }\n"
+                    ],
+                    [
+                        19,
+                        "        Action   = \"kms:*\"\n"
+                    ],
+                    [
+                        20,
+                        "        Resource = \"*\"\n"
+                    ],
+                    [
+                        21,
+                        "      }\n"
+                    ],
+                    [
+                        22,
+                        "    ]\n"
+                    ],
+                    [
+                        23,
+                        "  })\n"
+                    ],
+                    [
+                        24,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    5,
+                    24
+                ],
+                "resource": "aws_kms_key.s3_key",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": null,
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-iam-policies/bc-aws-2-64",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_57",
+                "bc_check_id": "BC_AWS_S3_2",
+                "check_name": "S3 Bucket has an ACL defined which allows public WRITE access.",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "access_control_policy/grant/*/grantee/uri",
+                        "access_control_policy/grant/*/permission",
+                        "acl",
+                        "resource_type",
+                        "access_control_policy",
+                        "access_control_policy/grant"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-2-acl-write-permissions-everyone",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV2_AWS_61",
+                "bc_check_id": "BC_AWS_LOGGING_35",
+                "check_name": "Ensure that an S3 bucket has a lifecycle configuration",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "lifecycle_rule"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": {
+                    "code_block": [
+                        [
+                            66,
+                            "resource \"aws_s3_bucket_lifecycle_configuration\" \"project_bucket\" {\n"
+                        ],
+                        [
+                            67,
+                            "  bucket = aws_s3_bucket.project_bucket.id\n"
+                        ],
+                        [
+                            68,
+                            "\n"
+                        ],
+                        [
+                            69,
+                            "  rule {\n"
+                        ],
+                        [
+                            70,
+                            "    id     = \"abort-incomplete-uploads\"\n"
+                        ],
+                        [
+                            71,
+                            "    status = \"Enabled\"\n"
+                        ],
+                        [
+                            72,
+                            "\n"
+                        ],
+                        [
+                            73,
+                            "    filter {}\n"
+                        ],
+                        [
+                            74,
+                            "\n"
+                        ],
+                        [
+                            75,
+                            "    abort_incomplete_multipart_upload {\n"
+                        ],
+                        [
+                            76,
+                            "      days_after_initiation = 7\n"
+                        ],
+                        [
+                            77,
+                            "    }\n"
+                        ],
+                        [
+                            78,
+                            "  }\n"
+                        ],
+                        [
+                            79,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/main.tf",
+                    "file_line_range": [
+                        66,
+                        79
+                    ],
+                    "resource": "aws_s3_bucket_lifecycle_configuration.project_bucket",
+                    "entity_tags": {},
+                    "evaluations": null,
+                    "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                    "resource_address": null
+                },
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-61",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_21",
+                "bc_check_id": "BC_AWS_S3_16",
+                "check_name": "Ensure all data stored in the S3 bucket have versioning enabled",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "versioning_configuration/status",
+                        "resource_type",
+                        "versioning/enabled"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": {
+                    "code_block": [
+                        [
+                            46,
+                            "resource \"aws_s3_bucket_versioning\" \"project_bucket\" {\n"
+                        ],
+                        [
+                            47,
+                            "  bucket = aws_s3_bucket.project_bucket.id\n"
+                        ],
+                        [
+                            48,
+                            "\n"
+                        ],
+                        [
+                            49,
+                            "  versioning_configuration {\n"
+                        ],
+                        [
+                            50,
+                            "    status = \"Enabled\"\n"
+                        ],
+                        [
+                            51,
+                            "  }\n"
+                        ],
+                        [
+                            52,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/main.tf",
+                    "file_line_range": [
+                        46,
+                        52
+                    ],
+                    "resource": "aws_s3_bucket_versioning.project_bucket",
+                    "entity_tags": {},
+                    "evaluations": null,
+                    "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                    "resource_address": null
+                },
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-16-enable-versioning",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_20",
+                "bc_check_id": "BC_AWS_S3_1",
+                "check_name": "S3 Bucket has an ACL defined which allows public READ access.",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "access_control_policy/grant/*/grantee/uri",
+                        "acl",
+                        "resource_type",
+                        "access_control_policy",
+                        "access_control_policy/grant"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-1-acl-read-permissions-everyone",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV2_AWS_6",
+                "bc_check_id": "BC_AWS_NETWORKING_52",
+                "check_name": "Ensure that S3 bucket has a Public Access block",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "block_public_acls",
+                        "block_public_policy"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": {
+                    "code_block": [
+                        [
+                            37,
+                            "resource \"aws_s3_bucket_public_access_block\" \"project_bucket\" {\n"
+                        ],
+                        [
+                            38,
+                            "  bucket = aws_s3_bucket.project_bucket.id\n"
+                        ],
+                        [
+                            39,
+                            "\n"
+                        ],
+                        [
+                            40,
+                            "  block_public_acls       = true\n"
+                        ],
+                        [
+                            41,
+                            "  block_public_policy     = true\n"
+                        ],
+                        [
+                            42,
+                            "  ignore_public_acls      = true\n"
+                        ],
+                        [
+                            43,
+                            "  restrict_public_buckets = true\n"
+                        ],
+                        [
+                            44,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/main.tf",
+                    "file_line_range": [
+                        37,
+                        44
+                    ],
+                    "resource": "aws_s3_bucket_public_access_block.project_bucket",
+                    "entity_tags": {},
+                    "evaluations": null,
+                    "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                    "resource_address": null
+                },
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-networking-policies/s3-bucket-should-have-public-access-blocks-defaults-to-false-if-the-public-access-block-is-not-attached",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_145",
+                "bc_check_id": "BC_AWS_GENERAL_56",
+                "check_name": "Ensure that S3 buckets are encrypted with KMS by default",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "rule/apply_server_side_encryption_by_default/sse_algorithm",
+                        "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": {
+                    "code_block": [
+                        [
+                            54,
+                            "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"project_bucket\" {\n"
+                        ],
+                        [
+                            55,
+                            "  bucket = aws_s3_bucket.project_bucket.id\n"
+                        ],
+                        [
+                            56,
+                            "\n"
+                        ],
+                        [
+                            57,
+                            "  rule {\n"
+                        ],
+                        [
+                            58,
+                            "    apply_server_side_encryption_by_default {\n"
+                        ],
+                        [
+                            59,
+                            "      sse_algorithm     = \"aws:kms\"\n"
+                        ],
+                        [
+                            60,
+                            "      kms_master_key_id = aws_kms_key.s3_key.arn\n"
+                        ],
+                        [
+                            61,
+                            "    }\n"
+                        ],
+                        [
+                            62,
+                            "    bucket_key_enabled = true\n"
+                        ],
+                        [
+                            63,
+                            "  }\n"
+                        ],
+                        [
+                            64,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/main.tf",
+                    "file_line_range": [
+                        54,
+                        64
+                    ],
+                    "resource": "aws_s3_bucket_server_side_encryption_configuration.project_bucket",
+                    "entity_tags": {},
+                    "evaluations": null,
+                    "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                    "resource_address": null
+                },
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-buckets-are-encrypted-with-kms-by-default",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_19",
+                "bc_check_id": "BC_AWS_S3_14",
+                "check_name": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+                "check_result": {
+                    "result": "PASSED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "rule/apply_server_side_encryption_by_default/sse_algorithm",
+                        "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": {
+                    "code_block": [
+                        [
+                            54,
+                            "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"project_bucket\" {\n"
+                        ],
+                        [
+                            55,
+                            "  bucket = aws_s3_bucket.project_bucket.id\n"
+                        ],
+                        [
+                            56,
+                            "\n"
+                        ],
+                        [
+                            57,
+                            "  rule {\n"
+                        ],
+                        [
+                            58,
+                            "    apply_server_side_encryption_by_default {\n"
+                        ],
+                        [
+                            59,
+                            "      sse_algorithm     = \"aws:kms\"\n"
+                        ],
+                        [
+                            60,
+                            "      kms_master_key_id = aws_kms_key.s3_key.arn\n"
+                        ],
+                        [
+                            61,
+                            "    }\n"
+                        ],
+                        [
+                            62,
+                            "    bucket_key_enabled = true\n"
+                        ],
+                        [
+                            63,
+                            "  }\n"
+                        ],
+                        [
+                            64,
+                            "}\n"
+                        ]
+                    ],
+                    "file_path": "/main.tf",
+                    "file_line_range": [
+                        54,
+                        64
+                    ],
+                    "resource": "aws_s3_bucket_server_side_encryption_configuration.project_bucket",
+                    "entity_tags": {},
+                    "evaluations": null,
+                    "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                    "resource_address": null
+                },
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-14-data-encrypted-at-rest",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            }
+        ],
+        "failed_checks": [
+            {
+                "check_id": "CKV2_AWS_62",
+                "bc_check_id": "BC_AWS_LOGGING_36",
+                "check_name": "Ensure S3 buckets should have event notifications enabled",
+                "check_result": {
+                    "result": "FAILED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-logging-policies/bc-aws-2-62",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_144",
+                "bc_check_id": "BC_AWS_GENERAL_72",
+                "check_name": "Ensure that S3 bucket has cross-region replication enabled",
+                "check_result": {
+                    "result": "FAILED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "replication_configuration/rules/*/status",
+                        "rule/*/status"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/aws-general-policies/ensure-that-s3-bucket-has-cross-region-replication-enabled",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            },
+            {
+                "check_id": "CKV_AWS_18",
+                "bc_check_id": "BC_AWS_S3_13",
+                "check_name": "Ensure the S3 bucket has access logging enabled",
+                "check_result": {
+                    "result": "FAILED",
+                    "entity": {
+                        "aws_s3_bucket": {
+                            "project_bucket": {
+                                "__end_line__": 35,
+                                "__start_line__": 28,
+                                "bucket": [
+                                    "cybersecurity-project-demo-unique-12345"
+                                ],
+                                "tags": [
+                                    {
+                                        "Project": "Agentic-DevSecOps",
+                                        "Purpose": "Security-Testing"
+                                    }
+                                ],
+                                "__address__": "aws_s3_bucket.project_bucket"
+                            }
+                        }
+                    },
+                    "evaluated_keys": [
+                        "resource_type",
+                        "logging"
+                    ]
+                },
+                "code_block": [
+                    [
+                        28,
+                        "resource \"aws_s3_bucket\" \"project_bucket\" {\n"
+                    ],
+                    [
+                        29,
+                        "  bucket = \"cybersecurity-project-demo-unique-12345\"\n"
+                    ],
+                    [
+                        30,
+                        "\n"
+                    ],
+                    [
+                        31,
+                        "  tags = {\n"
+                    ],
+                    [
+                        32,
+                        "    Project = \"Agentic-DevSecOps\"\n"
+                    ],
+                    [
+                        33,
+                        "    Purpose = \"Security-Testing\"\n"
+                    ],
+                    [
+                        34,
+                        "  }\n"
+                    ],
+                    [
+                        35,
+                        "}\n"
+                    ]
+                ],
+                "file_path": "/main.tf",
+                "file_abs_path": "/root/cybersecurity-project/terraform/main.tf",
+                "repo_file_path": "/terraform/main.tf",
+                "file_line_range": [
+                    28,
+                    35
+                ],
+                "resource": "aws_s3_bucket.project_bucket",
+                "evaluations": null,
+                "check_class": "checkov.common.graph.checks_infra.base_check",
+                "fixed_definition": null,
+                "entity_tags": {
+                    "Project": "Agentic-DevSecOps",
+                    "Purpose": "Security-Testing"
+                },
+                "caller_file_path": null,
+                "caller_file_line_range": null,
+                "resource_address": null,
+                "severity": null,
+                "bc_category": null,
+                "benchmarks": null,
+                "description": null,
+                "short_description": null,
+                "vulnerability_details": null,
+                "connected_node": null,
+                "guideline": "https://docs.prismacloud.io/en/enterprise-edition/policy-reference/aws-policies/s3-policies/s3-13-enable-logging",
+                "details": [],
+                "check_len": null,
+                "definition_context_file_path": "/root/cybersecurity-project/terraform/main.tf"
+            }
+        ],
+        "skipped_checks": [],
+        "parsing_errors": []
+    },
+    "summary": {
+        "passed": 17,
+        "failed": 3,
+        "skipped": 0,
+        "parsing_errors": 0,
+        "resource_count": 6,
+        "checkov_version": "3.3.30"
+    },
+    "url": "Add an api key '--bc-api-key <api-key>' to see more detailed insights via https://bridgecrew.cloud"
+}
