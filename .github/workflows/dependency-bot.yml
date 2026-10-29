@@ -44,7 +44,7 @@ jobs:
       - name: Generate current requirements SBOM
         uses: anchore/sbom-action@v0
         with:
-          path: requirements.txt
+          file: requirements.txt
           format: cyclonedx-json
           output-file: ${{ runner.temp }}/requirements.cdx.json
           upload-artifact: false
