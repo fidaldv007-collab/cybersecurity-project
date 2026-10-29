@@ -1,9 +1,9 @@
-name: SBOM Dependency Update Bot
+name: Week 3 Demo - SBOM Dependency Update Bot
 
 on:
   workflow_dispatch:
   push:
-    branches: [ADITHYANmember2]
+    branches: [demo/week3-dependency-bot]
     paths:
       - requirements.txt
       - scripts/**
@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   prepare:
-    if: github.ref == 'refs/heads/ADITHYANmember2'
+    if: github.ref == 'refs/heads/demo/week3-dependency-bot'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     outputs:
@@ -87,7 +87,7 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ADITHYANmember2
+          ref: demo/week3-dependency-bot
           persist-credentials: false
 
       - name: Ensure target has not changed since verification
@@ -111,11 +111,11 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ADITHYANmember2
-          branch: bot/security-dependencies-member2
+          base: demo/week3-dependency-bot
+          branch: bot/security-dependencies-week3-demo
           add-paths: requirements.txt
           commit-message: "fix(deps): prepare verified security updates"
-          title: "fix(deps): SBOM-driven security dependency updates"
+          title: "DEMO ONLY: verified SBOM security dependency update"
           body: |
             Automated dependency security update.
 
