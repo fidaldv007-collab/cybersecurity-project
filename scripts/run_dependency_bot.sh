@@ -1,3 +1,4 @@
+# Week 3 demo trigger marker
 #!/usr/bin/env bash
 set -euo pipefail
 
