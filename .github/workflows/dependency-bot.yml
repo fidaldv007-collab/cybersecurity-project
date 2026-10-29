@@ -1,0 +1,131 @@
+name: SBOM Dependency Update Bot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ADITHYANmember2]
+    paths:
+      - requirements.txt
+      - scripts/**
+      - tests/**
+      - app/**
+      - Dockerfile.dependency-sandbox
+      - .github/workflows/dependency-bot.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-bot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/ADITHYANmember2'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      update_ready: ${{ steps.bot.outputs.update_ready }}
+
+    steps:
+      - name: Checkout trusted branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install audit tool
+        run: python -m pip install pip-audit
+
+      - name: Generate current requirements SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: requirements.txt
+          format: cyclonedx-json
+          output-file: ${{ runner.temp }}/requirements.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Run dependency bot and verify candidate
+        id: bot
+        env:
+          SBOM_FILE: ${{ runner.temp }}/requirements.cdx.json
+        run: bash scripts/run_dependency_bot.sh "$SBOM_FILE"
+
+      - name: Stage verified requirements
+        if: steps.bot.outputs.update_ready == 'true'
+        env:
+          CANDIDATE: ${{ steps.bot.outputs.candidate_path }}
+          VERIFIED_DIR: ${{ runner.temp }}/verified-update
+        run: |
+          mkdir -p "$VERIFIED_DIR"
+          cp -- "$CANDIDATE" "$VERIFIED_DIR/requirements.txt"
+
+      - name: Upload verified candidate
+        if: steps.bot.outputs.update_ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-dependency-update
+          path: ${{ runner.temp }}/verified-update/requirements.txt
+          if-no-files-found: error
+          retention-days: 7
+
+  open-draft-pr:
+    needs: prepare
+    if: needs.prepare.outputs.update_ready == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ADITHYANmember2
+          persist-credentials: false
+
+      - name: Ensure target has not changed since verification
+        env:
+          VERIFIED_SHA: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$VERIFIED_SHA"
+
+      - name: Download verified candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: verified-dependency-update
+          path: ${{ runner.temp }}/verified-update
+
+      - name: Apply verified requirements only
+        env:
+          VERIFIED_DIR: ${{ runner.temp }}/verified-update
+        run: cp -- "$VERIFIED_DIR/requirements.txt" requirements.txt
+
+      - name: Create or update draft security PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ADITHYANmember2
+          branch: bot/security-dependencies-member2
+          add-paths: requirements.txt
+          commit-message: "fix(deps): prepare verified security updates"
+          title: "fix(deps): SBOM-driven security dependency updates"
+          body: |
+            Automated dependency security update.
+
+            Checks completed before this draft PR:
+            - Current requirements SBOM generated and checked for consistency
+            - SBOM-derived dependency audit
+            - Candidate requirements prepared separately
+            - Fresh candidate dependency audit
+            - Restricted-container application and bot tests
+
+            Human review and required CI checks are needed before merging.
+            This bot does not automatically merge updates.
+          draft: true
