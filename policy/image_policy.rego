@@ -1,14 +1,26 @@
 package cybersecurity.policy
 
-default allow = false
+import rego.v1
 
-# Deny if any vulnerability is flagged as CRITICAL
-deny[msg] {
-    input.vulnerabilities[_].Severity == "CRITICAL"
-    msg := "Deployment blocked: Critical vulnerability detected in image scan."
+default allow := false
+
+# Block deployment if a critical vulnerability exists
+deny contains "Critical vulnerability detected" if {
+    some vuln in input.vulnerabilities
+    vuln.Severity == "CRITICAL"
 }
 
-# Allow if no critical issues are found
-allow {
-    not deny[_]
+# Block deployment if image signature is not verified
+deny contains "Image signature verification failed" if {
+    input.signature_verified != true
+}
+
+# Block deployment if the container is privileged
+deny contains "Privileged container deployment is prohibited" if {
+    input.privileged == true
+}
+
+# Allow deployment only when no security rule is violated
+allow if {
+    count(deny) == 0
 }

@@ -17,3 +17,14 @@ reports/trivy-official.json
 reports/trivy-image.json
 reports/image-sbom.json
 sbom.cyclonedx.json
+
+# Terraform
+.terraform/
+*.tfstate
+.tfstate.
+crash.log
+crash.*.log
+
+# Temporary backup files
+*.backup
+*.bak
