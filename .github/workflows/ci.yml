@@ -10,19 +10,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+    - name: Install dependencies
+      run: pip install -r requirements.txt
 
-      - name: Run application smoke test
-        run: |
-          python app/app.py &
-          sleep 3
-          curl -f http://127.0.0.1:8000/health
+    - name: Run application smoke test
+      run: |
+        python app.py &
+        sleep 3
+        curl -f http://127.0.0.1:5000/health
