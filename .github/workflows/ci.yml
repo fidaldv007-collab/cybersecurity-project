@@ -23,6 +23,6 @@ jobs:
 
       - name: Run application smoke test
         run: |
-          python app.py &
+          python app/app.py &
           sleep 3
           curl -f http://127.0.0.1:8000/health
