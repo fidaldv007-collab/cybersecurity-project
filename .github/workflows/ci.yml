@@ -28,7 +28,6 @@ jobs:
 
       - name: Install application dependencies
         run: |
-       HEAD
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
@@ -161,8 +160,3 @@ jobs:
             artifacts/sbom.bundle.json
           if-no-files-found: error
           retention-days: 14
-
-          python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
-          sleep 3
-          curl -f http://127.0.0.1:8000/health
-         origin/main
