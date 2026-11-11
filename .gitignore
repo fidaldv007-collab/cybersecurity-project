@@ -5,3 +5,15 @@ __pycache__/
 .coverage
 htmlcov/
 .env
+
+# Cosign private key
+cosign.key
+
+# Local OCI image layout
+reports/oci-image/
+
+# Local security scan outputs
+reports/trivy-official.json
+reports/trivy-image.json
+reports/image-sbom.json
+sbom.cyclonedx.json

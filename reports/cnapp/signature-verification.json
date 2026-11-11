@@ -1,0 +1,9 @@
+{
+  "status": "verified",
+  "artifact_type": "container_image",
+  "image": "ghcr.io/fidaldv007-collab/cybersecurity-demo:member3",
+  "digest": "sha256:114951e6d498e55f5ac3ca25c081470ae289b976982bfef114a2293ceae52636",
+  "verification_method": "cosign verify --key cosign.pub",
+  "verified_at": "2026-10-30T09:41:09.238216+00:00",
+  "evidence": "Cosign CLI verification succeeded using the repository public key."
+}

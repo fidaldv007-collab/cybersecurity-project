@@ -1,14 +1,21 @@
-name: CI
+
+name: DevSecOps CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, member3]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
-  test:
+  test-and-scan:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,13 +23,140 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.13"
+          cache: pip
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Run application smoke test
+      - name: Install application dependencies
         run: |
-          python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 &
-          sleep 3
-          curl -f http://127.0.0.1:8000/health
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run automated tests
+        run: python -m pytest -v
+
+      - name: Scan Python code with Bandit
+        run: |
+          python -m pip install bandit
+          bandit -r app -ll
+
+      - name: Audit dependencies
+        run: |
+          python -m pip install pip-audit
+          pip-audit -r requirements.txt
+
+      - name: Run application health check
+        shell: bash
+        run: |
+          python -m uvicorn app.main:app \
+            --host 127.0.0.1 --port 8000 > app.log 2>&1 &
+          APP_PID=$!
+          trap 'kill "$APP_PID" 2>/dev/null || true' EXIT
+
+          for i in {1..30}; do
+            if curl --fail --silent \
+              http://127.0.0.1:8000/health; then
+              echo
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat app.log
+          exit 1
+
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom.cyclonedx.json
+          upload-artifact: false
+
+      - name: Upload SBOM for signing job
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: sbom.cyclonedx.json
+          if-no-files-found: error
+          retention-days: 14
+
+  build-sign-verify:
+    if: github.event_name == 'push'
+    needs: test-and-scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download SBOM
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-cyclonedx
+          path: artifacts
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        id: build-image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/cybersecurity-demo:${{ github.ref_name }}
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+
+
+      - name: Sign image and SBOM
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          IMAGE_DIGEST: ${{ steps.build-image.outputs.digest }}
+        run: |
+          set -eu
+          trap 'rm -f cosign.key' EXIT
+          umask 077
+          printf '%s' "$COSIGN_PRIVATE_KEY" > cosign.key
+
+          IMAGE="ghcr.io/${{ github.repository_owner }}/cybersecurity-demo@${IMAGE_DIGEST}"
+
+          cosign sign --yes --key cosign.key "$IMAGE"
+          cosign sign-blob --yes \
+            --key cosign.key \
+            --bundle artifacts/sbom.bundle.json \
+            artifacts/sbom.cyclonedx.json
+
+      - name: Verify image signature
+        env:
+          IMAGE_DIGEST: ${{ steps.build-image.outputs.digest }}
+        run: |
+          cosign verify \
+            --key cosign.pub \
+            "ghcr.io/${{ github.repository_owner }}/cybersecurity-demo@${IMAGE_DIGEST}"
+
+      - name: Verify SBOM signature bundle
+        run: |
+          cosign verify-blob \
+            --key cosign.pub \
+            --bundle artifacts/sbom.bundle.json \
+            artifacts/sbom.cyclonedx.json
+
+      - name: Upload SBOM signature evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-signature-evidence
+          path: |
+            artifacts/sbom.cyclonedx.json
+            artifacts/sbom.bundle.json
+          if-no-files-found: error
+          retention-days: 14
