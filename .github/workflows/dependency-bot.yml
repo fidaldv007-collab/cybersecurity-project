@@ -3,7 +3,7 @@ name: SBOM Dependency Update Bot
 on:
   workflow_dispatch:
   push:
-    branches: [ADITHYANmember2]
+    branches: [main]
     paths:
       - requirements.txt
       - scripts/**
@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   prepare:
-    if: github.ref == 'refs/heads/ADITHYANmember2'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     outputs:
@@ -87,7 +87,7 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ADITHYANmember2
+          ref: main
           persist-credentials: false
 
       - name: Ensure target has not changed since verification
@@ -111,8 +111,8 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: ADITHYANmember2
-          branch: bot/security-dependencies-member2
+          base: main
+          branch: bot/security-dependencies-main
           add-paths: requirements.txt
           commit-message: "fix(deps): prepare verified security updates"
           title: "fix(deps): SBOM-driven security dependency updates"
