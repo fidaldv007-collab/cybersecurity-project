@@ -150,3 +150,13 @@ jobs:
             --key cosign.pub \
             --bundle artifacts/sbom.bundle.json \
             artifacts/sbom.cyclonedx.json
+
+      - name: Upload SBOM signature evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-signature-evidence
+          path: |
+            artifacts/sbom.cyclonedx.json
+            artifacts/sbom.bundle.json
+          if-no-files-found: error
+          retention-days: 14
