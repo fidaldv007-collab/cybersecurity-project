@@ -1,9 +1,8 @@
-
 name: DevSecOps CI
 
 on:
   push:
-    branches: [main, member3]
+    branches: [main, member3, ADITHYANmember2]
   pull_request:
     branches: [main]
 
@@ -32,7 +31,7 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Run automated tests
-        run: python -m pytest -v
+        run: PYTHONPATH=. python -m pytest -v
 
       - name: Scan Python code with Bandit
         run: |
@@ -115,7 +114,6 @@ jobs:
 
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3
-
 
       - name: Sign image and SBOM
         env:
